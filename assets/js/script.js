@@ -16,7 +16,6 @@ $("#userSubmit").on("click", function () {
                     var lon = data.coord.lon;
 
                     var oneCallApi = 'https://api.openweathermap.org/data/2.5/onecall?lat='+ lat + '&lon='+ lon +'&appid=' + apiKey
-                    console.log(oneCallApi)
                     console.log(data);
                     console.log(lat);
                     console.log(lon);
@@ -25,15 +24,28 @@ $("#userSubmit").on("click", function () {
 
                     //daily weather
                     $('#cityname').text(data.name)
-                    $('#temp').text('Temp: ' + data.main.temp);
-                    $('#wind').text('Wind Speed: ' + data.wind.speed + 'MPH');
-                    $('#humidity').text('Humidity: ' + data.main.humidity + '%');
+                    $('#temp').text(data.main.temp + 'F');
+                    $('#wind').text(data.wind.speed + 'MPH');
+                    $('#humidity').text(data.main.humidity + '%');
 
                     //uv data
-                    fetch(oneCallApi).then(function(response) {
-                        console.log(response)
+                    fetch(oneCallApi).then(function(resp) {
+                        resp.json().then(function(data) {
+                            console.log(data.daily[0].uvi);
+                            console.log(data.daily[0]);
+                            //color index for UV 
+                            if (data.daily[0].uvi < 2) {
+                                $('#UV-Index').text(data.daily[0].uvi).removeClass().addClass('bg-success rounded')
+                            } else if (data.daily[0].uvi > 2 && data.daily[0].uvi <= 5) {
+                                $('#UV-Index').text(data.daily[0].uvi).removeClass().addClass('bg-primary rounded')
+                            } else if (data.daily[0].uvi > 5 && data.daily[0].uvi <= 7 ) {
+                                $('#UV-Index').text(data.daily[0].uvi).removeClass().addClass('bg-warning rounded')
+                            } else {
+                                $('#UV-Index').text(data.daily[0].uvi).removeClass().addClass('bg-danger rounded')
+                            }
+                            
+                        });
                     });
-                    $('#UV-Index').text('UV Index: ');
                     
                 });
             } else {
@@ -46,3 +58,7 @@ $("#userSubmit").on("click", function () {
             alert("Please Enter a Valid City!");
         });
 });
+
+
+
+
