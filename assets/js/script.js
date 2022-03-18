@@ -4,7 +4,7 @@ var apiKey = "f31a9d61dacf5cd49a41c23a8bd6acbf";
 $("#userSubmit").on("click", function () {
     var location = $("#userInput").val();
     var apiUrl = "https://api.openweathermap.org/data/2.5/weather?q=" + location + "&units=imperial&daily.uvi&appid=" + apiKey;
-
+    
     //fetch openweather api
     fetch(apiUrl)
         .then(function (response) {
@@ -14,8 +14,8 @@ $("#userSubmit").on("click", function () {
                     var locationId = data.id;
                     var lat = data.coord.lat;
                     var lon = data.coord.lon;
-
                     var oneCallApi = 'https://api.openweathermap.org/data/2.5/onecall?lat=' + lat + '&lon=' + lon + '&units=imperial&appid=' + apiKey
+                    
                     //save location to local storage
                     localStorage.setItem(locationId, location);
 
@@ -26,14 +26,13 @@ $("#userSubmit").on("click", function () {
                     $('#wind').text(data.wind.speed + 'MPH');
                     $('#humidity').text(data.main.humidity + '%');
 
+
                     //uv data
                     fetch(oneCallApi).then(function (resp) {
                         resp.json().then(function (data) {
 
-                            console.log(data);
-
                             //color index for UV 
-                            if (data.daily[0].uvi < 2) {
+                            if (data.daily[0].uvi < 3) {
                                 $('#UV-Index').text(data.daily[0].uvi).removeClass().addClass('bg-success rounded')
                             } else if (data.daily[0].uvi > 3 && data.daily[0].uvi < 6) {
                                 $('#UV-Index').text(data.daily[0].uvi).removeClass().addClass('bg-primary rounded')
@@ -42,15 +41,15 @@ $("#userSubmit").on("click", function () {
                             } else {
                                 $('#UV-Index').text(data.daily[0].uvi).removeClass().addClass('bg-danger rounded')
                             }
-
+                            
                             //5 day forcast
                             for (i = 0; i < data.daily.length; i++) {
                                 $('.forcast-icon').eq(i).attr('src', 'http://openweathermap.org/img/wn/'+ data.daily[i].weather[0].icon + '.png');
                                 $('.forcast-temp').eq(i).text(data.daily[i].temp.day + 'F');
                                 $('.forcast-wind').eq(i).text(data.daily[i].wind_speed + 'MPH');
                                 $('.forcast-humidity').eq(i).text(data.daily[i].humidity + '%');
+                                
                             }
-
                         });
                     });
 
@@ -66,6 +65,25 @@ $("#userSubmit").on("click", function () {
         });
 });
 
+$('.city').on('click', function() {
+    var savedCity = $('.city-button')
+    for (i = 0; i < savedCity.length; i++) {
+        console.log(JSON.stringify($('button.city-button').innerText))
+        console.log($('button.city-button').eq(i))
+    }   
+});
 
 
+function history() {
+    for (i = 0; i < localStorage.length; i++) {
+        var city = localStorage.getItem(localStorage.key(i));
+        var cityBtn = document.createElement('button');
+        var recentSearch = document.querySelector('.city');
+        recentSearch.appendChild(cityBtn);
+        cityBtn.classList.add('city-button');
+        cityBtn.innerHTML = city;
+    }
+}
 
+
+ history();

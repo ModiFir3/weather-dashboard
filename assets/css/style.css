@@ -1,0 +1,24 @@
+#forcast {
+    background-color: navy;
+    color: white;
+}
+.city-button {
+    border-radius: 10px;
+    width: 100%;
+}
+#searchtxt {
+    margin: 30px 0px;
+}
+#userInput {
+    margin: 15px 0;
+}
+
+.city-button{
+    margin: 15px 0;
+}
+#forcast{
+    margin: 0 10px;
+}
+#weatherinfo {
+    margin: 30px 0;
+}
